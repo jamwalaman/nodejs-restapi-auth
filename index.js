@@ -3,9 +3,11 @@ const dotenv = require('dotenv').config()
 const {errorHandler} = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const app = express()
+const cors = require('cors')
 
 connectDB()
 
+app.use(cors({origin: 'http://localhost:3000'}))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 

@@ -1,7 +1,7 @@
 {
   "name": "nodejsapp-fav-movies",
   "version": "1.0.0",
-  "description": "Nodejs REST api",
+  "description": "Nodejs REST api with user authentication",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
