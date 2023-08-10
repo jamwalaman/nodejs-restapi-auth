@@ -35,12 +35,11 @@ const updateMovie = asyncHandler (async (req, res) => {
         res.status(400)
         throw new Error('Movie not found')
     }
-    const user = await User.findById(req.user.id)
-    if(!user) {
+    if(!req.user) {
         res.status(401)
         throw new Error('User not found')
     }
-    if(movie.user.toString() !== user.id) {
+    if(movie.user.toString() !== req.user.id) {
         res.status(401)
         throw new Error('User not authorized')
     }
@@ -56,12 +55,11 @@ const deleteMovie = asyncHandler (async (req, res) => {
         res.status(400)
         throw new Error('Movie not found')
     }
-    const user = await User.findById(req.user.id)
-    if(!user) {
+    if(!req.user) {
         res.status(401)
         throw new Error('User not found')
     }
-    if(movie.user.toString() !== user.id) {
+    if(movie.user.toString() !== req.user.id) {
         res.status(401)
         throw new Error('User not authorized')
     }
