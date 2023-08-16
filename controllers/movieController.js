@@ -5,7 +5,7 @@ const User = require('../models/User')
 // Get all movies
 // GET /api/movies
 const getMovies = asyncHandler (async (req, res) => {
-    const movies = await Movie.find({user: req.user.id})
+    const movies = await Movie.find({})
     res.status(200).json(movies)
 })
 
