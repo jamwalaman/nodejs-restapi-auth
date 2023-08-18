@@ -21,7 +21,8 @@ const createtMovie = asyncHandler (async (req, res) => {
         title: req.body.title,
         director: req.body.director,
         synopsis: req.body.synopsis,
-        user: req.user.id
+        user: req.user.id,
+        username: req.user.name
 
     })
     res.status(200).json(movie)
