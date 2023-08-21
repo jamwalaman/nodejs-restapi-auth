@@ -9,6 +9,17 @@ const getMovies = asyncHandler (async (req, res) => {
     res.status(200).json(movies)
 })
 
+// Get a movie by id
+// GET /api/movies/:id
+const oneMovie = asyncHandler (async (req, res) => {
+    const movie = await Movie.findById(req.params.id)
+    if (!movie) {
+        res.status(400)
+        throw new Error('Movie not found')
+    }
+    res.status(200).json(movie)
+})
+
 // Create a movie
 // POST /api/movies
 const createtMovie = asyncHandler (async (req, res) => {
@@ -68,4 +79,4 @@ const deleteMovie = asyncHandler (async (req, res) => {
     res.status(200).json({id: req.params.id})
 })
 
-module.exports = {getMovies, createtMovie, updateMovie, deleteMovie}
+module.exports = {getMovies, oneMovie, createtMovie, updateMovie, deleteMovie}
