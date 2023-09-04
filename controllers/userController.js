@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
+const {body, validationResult } = require('express-validator')
 const User = require('../models/User')
 
 // Register new user
@@ -32,18 +33,33 @@ const registerUser = asyncHandler (async (req, res) => {
 
 // Authenticate a user
 // POST /api/users/login
-const loginUser = asyncHandler (async (req, res) => {
-    const {email, password} = req.body
-    const user = await User.findOne({email})
-    if ( user && (await bcrypt.compare(password, user.password)) ) {
-        res.json({
-            name: user.name, email: user.email, token: generateToken(user._id)
-        })
-    } else {
-        res.status(400)
-        throw new Error('Invalid credentials')
-    }
-})
+const loginUser = [
+    body('email').notEmpty().escape().withMessage('Email is required'),
+    body('password').notEmpty().escape().withMessage('Password is required'),
+
+    asyncHandler (async (req, res) => {
+        
+        const {email, password} = req.body
+        const user = await User.findOne({email})
+        const errors = validationResult(req)
+        const errsObject = errors.mapped()
+        if(!errors.isEmpty()) {
+            res.status(400)
+            throw new Error(JSON.stringify(errsObject))
+        } else {
+            if ( user && (await bcrypt.compare(password, user.password)) ) {
+                res.json({
+                    name: user.name, email: user.email, token: generateToken(user._id)
+                })
+            } else {
+                res.status(400)
+                errsObject.authfail = 'Invalid credentials'
+                throw new Error(JSON.stringify(errsObject))
+            }
+        }
+
+    })
+]
 
 // Get user data
 // GET /api/users/profile
@@ -56,4 +72,4 @@ const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: '30d'})
 }
 
-module.exports = {registerUser, loginUser, getUserProfile}
+module.exports = {registerUser, loginUser ,getUserProfile}
