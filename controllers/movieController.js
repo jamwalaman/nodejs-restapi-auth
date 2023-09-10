@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Movie = require('../models/Movie')
-const User = require('../models/User')
+const {body, validationResult } = require('express-validator')
 
 // Get all movies
 // GET /api/movies
@@ -22,22 +22,30 @@ const oneMovie = asyncHandler (async (req, res) => {
 
 // Create a movie
 // POST /api/movies
-const createtMovie = asyncHandler (async (req, res) => {
-    const {title, director, synopsis} = req.body
-    if (!title || !director || !synopsis) {
-        res.status(400)
-        throw new Error('All fields are required')
-    }
-    const movie = await Movie.create({
-        title: req.body.title,
-        director: req.body.director,
-        synopsis: req.body.synopsis,
-        user: req.user.id,
-        username: req.user.name
+const createtMovie = [
+    body('title').notEmpty().escape().withMessage('Film title is required'),
+    body('director').notEmpty().escape().withMessage('Film director is required'),
+    body('synopsis').notEmpty().escape().withMessage('Film synopsis is required'),
+    asyncHandler (async (req, res) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()) {
+            res.status(400)
+            throw new Error(JSON.stringify(errors.mapped()))
+        }
 
+        const movie = await Movie.create({
+            title: req.body.title,
+            director: req.body.director,
+            synopsis: req.body.synopsis,
+            user: req.user.id,
+            username: req.user.name
+    
+        })
+
+        
+        res.status(200).json(movie)
     })
-    res.status(200).json(movie)
-})
+]
 
 // Update a movie
 // PUT /api/movies/:id
