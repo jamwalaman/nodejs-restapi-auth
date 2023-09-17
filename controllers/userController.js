@@ -58,7 +58,7 @@ const loginUser = [
         } else {
             if ( user && (await bcrypt.compare(passwordLogin, user.password)) ) {
                 res.json({
-                    name: user.name, email: user.email, token: generateToken(user._id)
+                    name: user.name, userID: user._id, email: user.email, token: generateToken(user._id)
                 })
             } else {
                 res.status(400)
