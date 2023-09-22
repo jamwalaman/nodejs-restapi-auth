@@ -31,7 +31,7 @@ const registerUser = [
         const user = await User.create({name, email, password: hashedPassword})
         if (user) {
             res.status(201).json({
-                name: user.name, email: user.email, token: generateToken(user._id)
+                name: user.name, userID: user._id, email: user.email, token: generateToken(user._id)
             })
         } else {
             res.status(400)
