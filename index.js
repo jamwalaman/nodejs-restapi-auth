@@ -7,7 +7,7 @@ const cors = require('cors')
 
 connectDB()
 
-app.use(cors({origin: 'https://moviesdata-react.netlify.app'}))
+app.use(cors({origin: process.env.NODE_ENV === 'production' ? 'https://moviesdata-react.netlify.app' : 'http://localhost:3000'}))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
