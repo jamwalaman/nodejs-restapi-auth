@@ -5,7 +5,7 @@ const {body, validationResult } = require('express-validator')
 // Get all movies
 // GET /api/movies
 const getMovies = asyncHandler (async (req, res) => {
-    const movies = await Movie.find({})
+    const movies = await Movie.find({}).sort({createdAt: - 1})
     res.status(200).json(movies)
 })
 
@@ -23,9 +23,9 @@ const oneMovie = asyncHandler (async (req, res) => {
 // Create a movie
 // POST /api/movies
 const createtMovie = [
-    body('title').notEmpty().escape().withMessage('Film title is required'),
-    body('director').notEmpty().escape().withMessage('Film director is required'),
-    body('synopsis').notEmpty().escape().withMessage('Film synopsis is required'),
+    body('title').trim().notEmpty().escape().withMessage('Film title is required'),
+    body('director').trim().notEmpty().escape().withMessage('Film director is required'),
+    body('synopsis').trim().notEmpty().escape().withMessage('Film synopsis is required'),
     asyncHandler (async (req, res) => {
         const errors = validationResult(req)
         if(!errors.isEmpty()) {
@@ -41,7 +41,6 @@ const createtMovie = [
             username: req.user.name
     
         })
-
         
         res.status(200).json(movie)
     })
@@ -49,23 +48,32 @@ const createtMovie = [
 
 // Update a movie
 // PUT /api/movies/:id
-const updateMovie = asyncHandler (async (req, res) => {
-    const movie = await Movie.findById(req.params.id)
-    if (!movie) {
-        res.status(400)
-        throw new Error('Movie not found')
-    }
-    if(!req.user) {
-        res.status(401)
-        throw new Error('User not found')
-    }
-    if(movie.user.toString() !== req.user.id) {
-        res.status(401)
-        throw new Error('User not authorized')
-    }
-    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {new: true})
-    res.status(200).json(updatedMovie)
-})
+const updateMovie = [
+    body('title').trim().escape(),
+    body('director').trim().escape(),
+    body('synopsis').trim().escape(),
+    asyncHandler (async (req, res) => {
+        const movie = await Movie.findById(req.params.id)
+        if (!movie) {
+            res.status(400)
+            throw new Error('Movie not found')
+        }
+        if(!req.user) {
+            res.status(401)
+            throw new Error('User not found')
+        }
+        if(movie.user.toString() !== req.user.id) {
+            res.status(401)
+            throw new Error('User not authorized')
+        }
+        const data = {}
+        data.title = req.body.title ? req.body.title : movie.title
+        data.director = req.body.director ? req.body.director : movie.director
+        data.synopsis = req.body.synopsis ? req.body.synopsis : movie.synopsis
+        const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, data, {new: true})
+        res.status(200).json(updatedMovie)
+    })
+]
 
 // Delete a movie
 // DELETE /api/movies/:id
