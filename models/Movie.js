@@ -6,7 +6,8 @@ const MovieSchema = new mongoose.Schema(
         username: {type: mongoose.Schema.Types.String, required: true, ref: 'User'},
         title: {type: String, required: [true, 'Please add the film title']},
         director: {type: String, required: [true, 'Please add the film director']},
-        synopsis: {type: String},
+        synopsis: {type: String, required: [true, 'Please add the film synopsis']},
+        release_date: {type: Date},
     },
     {timestamps: true}
     );

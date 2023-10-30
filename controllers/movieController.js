@@ -26,6 +26,7 @@ const createtMovie = [
     body('title').trim().notEmpty().escape().withMessage('Film title is required'),
     body('director').trim().notEmpty().escape().withMessage('Film director is required'),
     body('synopsis').trim().notEmpty().escape().withMessage('Film synopsis is required'),
+    body('release_date', 'Invalid date').optional({values: 'falsy'}).isISO8601().toDate(),
     asyncHandler (async (req, res) => {
         const errors = validationResult(req)
         if(!errors.isEmpty()) {
@@ -37,9 +38,9 @@ const createtMovie = [
             title: req.body.title,
             director: req.body.director,
             synopsis: req.body.synopsis,
+            release_date: req.body.release_date,
             user: req.user.id,
             username: req.user.name
-    
         })
         
         res.status(200).json(movie)
@@ -52,6 +53,7 @@ const updateMovie = [
     body('title').trim().escape(),
     body('director').trim().escape(),
     body('synopsis').trim().escape(),
+    body('release_date', 'Invalid date').optional({values: 'falsy'}).isISO8601().toDate(),
     asyncHandler (async (req, res) => {
         const movie = await Movie.findById(req.params.id)
         if (!movie) {
@@ -70,6 +72,7 @@ const updateMovie = [
         data.title = req.body.title ? req.body.title : movie.title
         data.director = req.body.director ? req.body.director : movie.director
         data.synopsis = req.body.synopsis ? req.body.synopsis : movie.synopsis
+        data.release_date = req.body.release_date ? req.body.release_date : movie.release_date
         const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, data, {new: true})
         res.status(200).json(updatedMovie)
     })
