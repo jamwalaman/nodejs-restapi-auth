@@ -1,5 +1,3 @@
-[Click here](https://moviesdata-react.netlify.app/) to view the front end for this api
-***
 # NodeJS rest api
 ### NodeJS rest api with auth
 
