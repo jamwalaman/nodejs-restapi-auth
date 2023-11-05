@@ -7,9 +7,9 @@ const User = require('../models/User')
 // Register new user
 // POST /api/users
 const registerUser = [
-    body('email').notEmpty().escape().withMessage('Email is required'),
-    body('password').notEmpty().escape().withMessage('Password is required'),
-    body('name').notEmpty().escape().withMessage('Username is required'),
+    body('email').trim().notEmpty().escape().withMessage('Email is required').isEmail().withMessage('Invalid email'),
+    body('password').trim().notEmpty().escape().withMessage('Password is required'),
+    body('name').trim().notEmpty().escape().withMessage('Username is required'),
 
     asyncHandler (async (req, res) => {
         const {name, email, password} = req.body
@@ -43,8 +43,8 @@ const registerUser = [
 // Authenticate a user
 // POST /api/users/login
 const loginUser = [
-    body('emailLogin').notEmpty().escape().withMessage('Email is required'),
-    body('passwordLogin').notEmpty().escape().withMessage('Password is required'),
+    body('emailLogin').trim().notEmpty().escape().withMessage('Email is required'),
+    body('passwordLogin').trim().notEmpty().escape().withMessage('Password is required'),
 
     asyncHandler (async (req, res) => {
         
